@@ -163,8 +163,8 @@ namespace LabVorkCG345
             GL.BindVertexArray(VAOint);
             windows[i].camera.Position = new Vector3(MathF.Cos(windows[i].pitch) * MathF.Cos(windows[i].yaw) * windows[i].Radius, MathF.Sin(windows[i].pitch) * windows[i].Radius, MathF.Cos(windows[i].pitch) * MathF.Sin(windows[i].yaw) * windows[i].Radius);
             windows[i].shaders.SetVector4("FirstColor", new Vector4(windows[i].c1.R, windows[i].c1.G, windows[i].c1.B, windows[i].c1.A) / 255);
-            windows[i].shaders.SetVector4("SecondColor", new Vector4(windows[0].c2.R, windows[i].c2.G, windows[i].c2.B, windows[i].c2.A) / 255);
-            windows[i].shaders.SetVector4("ThridColor", new Vector4(windows[0].c3.R, windows[i].c3.G, windows[i].c3.B, windows[i].c3.A) / 255);
+            windows[i].shaders.SetVector4("SecondColor", new Vector4(windows[i].c2.R, windows[i].c2.G, windows[i].c2.B, windows[i].c2.A) / 255);
+            windows[i].shaders.SetVector4("ThridColor", new Vector4(windows[i].c3.R, windows[i].c3.G, windows[i].c3.B, windows[i].c3.A) / 255);
             windows[i].shaders.SetFloat("step", windows[i].step);
             windows[i].shaders.SetMatrix4("model", Matrix4.Identity);
             windows[i].shaders.SetMatrix4("view", windows[i].camera.GetViewMatrix());
