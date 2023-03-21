@@ -94,7 +94,7 @@ namespace LabVorkCG345
         }
         public Matrix4 GetOrtoMatrix()
         {
-            return Matrix4.CreateOrthographicOffCenter(AspectRatio, -AspectRatio, 1, -1, 0, 100);
+            return Matrix4.CreateOrthographicOffCenter(-AspectRatio, AspectRatio, -1, 1, 0, 100);
         }
         // This function is going to update the direction vertices using some of the math learned in the web tutorials.
         private void UpdateVectors()
