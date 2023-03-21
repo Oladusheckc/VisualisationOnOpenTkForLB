@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Reflection;
@@ -31,19 +32,21 @@ namespace LabVorkCG345
         public float[] vertices;
         public float[] dataPoints;
         public uint[] datalinks;
-        float Radius = 3f;
+        float Radius = 2f;
         float pitch = 0;
         float yaw = 0;
         bool pickControl = false;
         float lastMouseX = 0;
         float lastMouseY = 0;
         float speed = 100;
+        float step;
+        Color c1, c2, c3;
         public Form1()
         {
             InitializeComponent();
             foreach(var item in StyleDraw) comboBox1.Items.Add(item);
             foreach (var item in Perspective) comboBox2.Items.Add(item);
-            comboBox1.SelectedIndex = 0;
+            comboBox1.SelectedIndex = 1;
             comboBox2.SelectedIndex = 1;
         }
         private void glControl1_Load(object sender, EventArgs e)
@@ -96,6 +99,10 @@ namespace LabVorkCG345
 
             var pos = new Vector3(MathF.Cos(pitch) * MathF.Cos(yaw) * Radius, MathF.Sin(pitch) * Radius, MathF.Cos(pitch) * MathF.Sin(yaw) * Radius);
             camera.Position = pos;
+            shaders.SetVector4("FirstColor", new Vector4(c1.R, c1.G, c1.B, c1.A)/255);
+            shaders.SetVector4("SecondColor", new Vector4(c2.R, c2.G, c2.B, c2.A)/255);
+            shaders.SetVector4("ThridColor", new Vector4(c3.R, c3.G, c3.B, c3.A)/255);
+            shaders.SetFloat("step", step);
             shaders.SetMatrix4("model", Matrix4.Identity);
             shaders.SetMatrix4("view", camera.GetViewMatrix());
             shaders.SetMatrix4("projection", comboBox2.SelectedIndex == 0 ? camera.GetOrtoMatrix() : camera.GetProjectionMatrix());
@@ -154,8 +161,8 @@ namespace LabVorkCG345
            
             if (pickControl)
             {
-                pitch -= (e.Y - lastMouseY)/speed;
-                yaw -= (e.X - lastMouseX)/speed;
+                pitch += (e.Y - lastMouseY)/speed;
+                yaw += (e.X - lastMouseX)/speed;
                 lastMouseX = e.X;
                 lastMouseY = e.Y;
 
@@ -168,7 +175,6 @@ namespace LabVorkCG345
         {
             glControl1.Refresh();
         }
-        Color c1, c2, c3;
         private void button1_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
@@ -176,17 +182,27 @@ namespace LabVorkCG345
             glControl1.Refresh();
         }
 
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                step = (float)Convert.ToDouble(textBox1.Text);
+                glControl1.Refresh();
+            }
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             colorDialog2.ShowDialog();
-            c2 = colorDialog1.Color;
+            c2 = colorDialog2.Color;
             glControl1.Refresh();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             colorDialog3.ShowDialog();
-            c3 = colorDialog1.Color;
+            c3 = colorDialog3.Color;
             glControl1.Refresh();
         }
     }

@@ -44,15 +44,18 @@ namespace LabVorkCG345
             {
                 for (int j = 0; j < size; j++)
                 {
-                    temp[i*size + j] = new Point(new Vector3((float)j / size - 0.5f, (float)i / size - 0.5f, FuncZ((float)j / size - 0.5f, (float)i / size - 0.5f)), baseColor);
+                    float x = ((float)j / size - 0.5f) * 2;
+                    float z = ((float)i / size - 0.5f) * 2;
+                    float y = FuncY(x, z);
+                    temp[i * size + j] = new Point(new Vector3(x, y, z), baseColor);
                 }
             }
             points = temp;
             this.size = size;
         }
-        private float FuncZ(float x, float y)
+        private float FuncY(float x, float z)
         {
-            return MathF.Pow(x, 2) / 2 - MathF.Pow(y, 2) / 2;
+            return MathF.Pow(x, 2) / 2 - MathF.Pow(z, 2) / 2;
         }
         public float[] GetArrayPoints()
         {

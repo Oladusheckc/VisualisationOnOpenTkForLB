@@ -31,12 +31,39 @@ namespace LabVorkCG345
             string FragmentShaderSource =
             @"
                 #version 460
+                precision mediump float;
+                uniform vec4 FirstColor;
+                uniform vec4 SecondColor;
+                uniform vec4 ThridColor;
+                uniform float step;
                 in vec4 vColor;
+                in vec3 pos;
                 out vec4 FragColor;
-
+                float y;
                 void main()
                 {
-                    FragColor = vColor;
+                    y = pos.y;
+                    vec4 BufColorFirst = FirstColor - SecondColor;
+                    vec4 BufColorSecond = SecondColor - ThridColor;
+                    if(y < 0.0)
+                    {
+                        FragColor = ThridColor + BufColorSecond*(1+y);
+                    }
+                    else
+                    {
+                        FragColor = SecondColor + BufColorFirst*(y);
+                    }
+                    if(step > 0)
+                    {
+                        if(y/step - floor(y/step)< 0.01)
+                        {
+                            if(y/step - floor(y/step)> -0.01)
+                            {
+                                FragColor = vec4(0.0,0.0,0.0,1.0);
+                            }   
+                        }
+                    }
+                    //FragColor = vColor;
 
                 }
             ";
@@ -50,9 +77,11 @@ namespace LabVorkCG345
                 layout (location = 0) in vec3 aPosition;
                 layout (location = 1) in vec4 aColor;
                 out vec4 vColor;
+                out vec3 pos;
                 void main()
                 {
                     vColor = aColor;
+                    pos = aPosition;
                     gl_Position = vec4(aPosition, 1.0) * model * view * projection;
                 }
             ";
@@ -93,7 +122,6 @@ namespace LabVorkCG345
             GL.LinkProgram(Handle);
 
             GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
-
             GL.DetachShader(Handle, VertexShader);
             GL.DetachShader(Handle, FragmentShader);
             GL.DeleteShader(FragmentShader);
@@ -124,10 +152,15 @@ namespace LabVorkCG345
             GL.UseProgram(Handle);
             GL.UniformMatrix4(uniformLocations[name], true, ref data);
         }
-        public void SetVector3(string name, Vector3 data)
+        public void SetVector4(string name, Vector4 data)
         {
             GL.UseProgram(Handle);
-            GL.Uniform3(uniformLocations[name], data);
+            GL.Uniform4(uniformLocations[name], data);
+        }
+        public void SetVector2(string name, Vector2 data)
+        {
+            GL.UseProgram(Handle);
+            GL.Uniform2(uniformLocations[name], data);
         }
         ~Shaders()
         {
